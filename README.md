@@ -1,2 +1,3 @@
-#Colaborators
--Rafael p. Barboza
+# Colaborators
+- Daniel Nuñez
+- Rafael p. Barboza
