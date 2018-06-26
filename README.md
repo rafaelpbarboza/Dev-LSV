@@ -13,10 +13,27 @@ This is a software that helps companies automatize the boring stuff
 
 ## Requirements
 ### Software versions
+- python version 3.5
+- django version 1.11
 ### Environment
 ### Persistent data
 
+## project strucutre
+```
+.
+└── robotlsv_container
+    ├── apps
+    │   └── robotone
+    │       └── migrations
+    ├── robotlsv
+    ├── static
+    │   ├── css
+    │   ├── img
+    │   └── js
+    └── templates
+        └── robotone
 
+```
 
 ## UMLs
 
