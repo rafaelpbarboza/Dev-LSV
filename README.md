@@ -15,6 +15,8 @@ This is a software that helps companies automatize the boring stuff
 ### Software versions
 - python version 3.5
 - django version 1.11
+- django-rest-framework
+- celery 4.2
 ### Environment
 ### Persistent data
 
@@ -24,7 +26,6 @@ This is a software that helps companies automatize the boring stuff
 └── robotlsv_container
     ├── apps
     │   └── robotone
-    │       └── migrations
     ├── robotlsv
     ├── static
     │   ├── css
