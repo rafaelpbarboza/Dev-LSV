@@ -185,3 +185,20 @@ venv.bak/
 
 
 # End of https://www.gitignore.io/api/django,python,pycharm
+# Local files
+*.pyc
+.idea/*
+.idea
+settings_local.py
+sources/
+source/
+docs/
+*.pyc
+.idea/*
+*.sqlite3
+*.seg
+*.toc
+*.log
+venv
+*.db
+/media/*
