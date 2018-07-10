@@ -3,22 +3,22 @@ from django.db import models
 
 
 # Create your models here.
-class Robot(models.Model):
+class MonitorizatorRobot(models.Model):
     started = models.DateTimeField()
     finished = models.DateTimeField()
     response = models.CharField(max_length=250)
-    type = (
-        (1, 'robotA'),
-        (2, 'robotB')
+    TYPE = (
+        ('RobotA''', 'robotA'),
+        ('RobotB', 'robotB')
     )
-    type = models.CharField(choices=type, default=1, max_length=50)
-    state = (
-        (1, 'Waiting'),
-        (2, 'Working'),
-        (3, 'Finished'),
+    type = models.CharField(choices=TYPE, default=1, max_length=50)
+    STATE = (
+        ('Waiting', 'waiting'),
+        ('Working', 'working'),
+        ('Finished', 'finished')
     )
-    status = models.CharField(choices=state, default=1, max_length=50)
+    status = models.CharField(choices=STATE, default=1,  max_length=50)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
-    def __init__(self):
-        self.status = 'Waiting'
+    def __str__(self):
+        return self.user.username
