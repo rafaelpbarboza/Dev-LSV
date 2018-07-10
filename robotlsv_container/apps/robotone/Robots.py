@@ -3,9 +3,10 @@ import os
 from selenium.webdriver.chrome.webdriver import WebDriver
 from selenium.webdriver.common.keys import Keys
 
-BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
-driver = WebDriver(executable_path=os.path.join(BASE_DIR, 'driver', 'chromedriver'))
+# BASE_DIR = os.path.dirname(os.path.dirname(__file__))
+
+driver = WebDriver(executable_path=os.path.join('apps/robotone/', 'driver', 'chromedriver'))
 
 
 def robot_eluniversal(kwords):

@@ -4,6 +4,10 @@
 # vim
 *.swp
 
+# ignoring migrations
+migrations/0*
+/migrations/0*
+
 ### Django ###
 *.log
 *.pot

@@ -1,34 +1,37 @@
 from __future__ import unicode_literals, absolute_import # for unicode and python 2.7
 
 # importando celery
+import datetime
+from pprint import pprint
+
+from apps.robotone.Robots import robot_eluniversal
 from robotlsv import celery_app as app
 from celery import group, chain
 
 # importar modelos
-from .models import Robot
+from .models import Robotmintor
 
 
-# jesus currently working on tasks
-# @app.task(bind=True)
-# def inirobot(self, robo_id, *args):
-#     """inicializar y redireccionar el tipo de robot"""
-#
-#     # get robot type by id = type
-#     current_robot = Robot.objects.get(pk=robo_id)
-#     robo_tye =  current_robot.type
-#
-#     # inicializar valor de started
-#     # setiar atributo de stado a working
-#     if type:
-#         robot_type.
-#
-#     robot_news.delay()
-#     pass
+@app.task(bind=True)
+def initrobot(self, robo_id, kwords):
+    """inicializar y redireccionar el tipo de robot"""
+
+    # get robot type by id = type
+    current_robot = Robotmintor.objects.get(pk=robo_id)
+    robo_type =  current_robot.TYPE[int(current_robot.type)][1]
+
+    # inicializar valor de started
+    current_robot.started = datetime.datetime.now()
+    current_robot.status = "2"
+    current_robot.save()
+
+    robot_news.delay(robo_id, kwords)
 
 
-# @app.task(bind=True)
-# def robot_news(self):
-#     robot1(keywords)
+@app.task()
+def robot_news(id, keywords):
+    news = robot_eluniversal(keywords)
+    pprint(news)
 
 @app.task
 def save_to_excel():

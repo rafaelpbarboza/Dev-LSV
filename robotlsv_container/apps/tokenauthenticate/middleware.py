@@ -14,7 +14,7 @@ class LifeSpanTokenMiddleware(object):
         # Code to be executed for each request before
         # the view (and later middleware) are called.
         response = self.get_response(request)
-        if request.auth is not None:
+        if getattr(request, 'auth', None) is not None:
             tf = datetime.datetime.now() - request.auth.created.replace(tzinfo=None)
             time_difference_in_minutes = tf.total_seconds() / 60
             lifespan = getattr(settings, 'EXPIRING_TOKEN_LIFESPAN', None) or 30  # The token has 30 minutes to be in use
