@@ -1,8 +1,6 @@
 from django.conf.urls import url
 
 from rest_framework.routers import SimpleRouter
-
-from .models import MonitorizatorRobot
 from .views import RobotModelViewSet
 
 router = SimpleRouter()
