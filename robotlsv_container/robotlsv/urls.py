@@ -19,6 +19,6 @@ from rest_framework.authtoken.views import ObtainAuthToken
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    url(r'^login/$', ObtainAuthToken.as_view()),
+    url(r'^authenticate/', include('apps.tokenauthenticate.urls')),
     url(r'^robot/', include('apps.robotone.urls'))
 ]
