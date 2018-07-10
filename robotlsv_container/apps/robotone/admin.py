@@ -1,7 +1,8 @@
 from django.contrib import admin
 
 # Register your models here.
-from .models import MonitorizatorRobot
 
-admin.site.register(MonitorizatorRobot)
+from .models import Robotmintor
+admin.site.register(Robotmintor)
+
 

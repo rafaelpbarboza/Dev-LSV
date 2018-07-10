@@ -36,6 +36,30 @@ This is a software that helps companies automatize the boring stuff
 
 ```
 
+## current start process
+
+**set up db**
+
+```
+python manage.py makemigrations
+python manage.py migrations
+python manage.py createsuperuser
+
+```
+
+**run the django app**
+
+
+**add robot monitor on the admin** on http://localhost:8000/admin
+
+**run celery:**
+But make sure you dont clase the windows tha pops up.
+```
+celery worker -A robotlsv -l info
+```
+
+**Go to** http://localhost:8000/robot/1 to execut the robot initialization task.
+
 ## UMLs
 
 insert uml here:
