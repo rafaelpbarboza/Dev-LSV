@@ -7,11 +7,11 @@ class Robot(models.Model):
     started = models.DateTimeField()
     finished = models.DateTimeField()
     response = models.CharField(max_length=250)
-    type = (
+    TYPE = (
         (1, 'robotA'),
         (2, 'robotB')
     )
-    type = models.CharField(choices=type, default=1, max_length=50)
+    type = models.CharField(choices=TYPE, default=1, max_length=50)
     state = (
         (1, 'Waiting'),
         (2, 'Working'),
@@ -20,5 +20,5 @@ class Robot(models.Model):
     status = models.CharField(choices=state, default=1, max_length=50)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
-    def __init__(self):
-        self.status = 'Waiting'
+    # def __init__(self):
+    #     self.status = 'Waiting'
