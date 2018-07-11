@@ -8,7 +8,7 @@ import xlsxwriter as xlsxwriter
 
 from apps.robotone.Robots import robot_eluniversal
 from robotlsv import celery_app as app
-from celery import group, chain
+from celery import group, chain, chord
 
 # importar modelos
 from .models import Robotmintor
@@ -27,31 +27,53 @@ def initrobot(self, robo_id, kwords):
     current_robot.status = "2"
     current_robot.save()
 
-    robot_news.delay(robo_id, kwords)
+    print("robot type: {}".format(robo_type))
+
+    if robo_type == 'robotB':
+        robot_type_news.delay(robo_id, kwords)
 
 
+# # # this is a robo type.
 @app.task()
-def robot_news(id, keywords):
-    news = robot_eluniversal(keywords)
+def robot_type_news(robot_id, keywords):
+    chord(
+        group(robot_news_eluniversal.s(robot_id, keywords))
+    )(
+        chain(save_to_excel.s(), send_email.s())()
+    )
 
-    workbook = xlsxwriter.Workbook('links.xlsx')
+
+    robot_news_eluniversal.delay(robot_id, keywords)
+    # robot_news_eltiempo.delay(robot_id, keywords)
+
+# robo universal
+@app.task()
+def robot_news_eluniversal(robot_id, keywords):
+    news_universal = robot_eluniversal(keywords)
+
+# robo universal
+@app.task()
+def robot_news_eltiempo():
+    pass
+
+@app.task
+def save_to_excel(data):
+    file_path = 'media/links.xlsx'
+    file_headers = ['News title', 'Link']
+
+    workbook = xlsxwriter.Workbook(file_path)
     worksheet = workbook.add_worksheet()
-    worksheet.write_row(0, 0, ['News title', 'Link'])
+    worksheet.write_row(0, 0, file_headers)
 
-    row,col = 1, 0
-    for new in news:
+    row, col = 1, 0
+    for new in data:
         worksheet.write_row(row, col, new)
         row += 1
 
-    print(keywords)
-    # print(news)
     workbook.close()
-    print("file has been created")
-
-@app.task
-def save_to_excel():
+    print("file has been created in {}".format(file_path))
     pass
 
 @app.task()
 def send_email():
-    pass
+    print("emil test")
