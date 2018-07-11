@@ -36,16 +36,20 @@ def initrobot(self, robo_id, kwords):
 # # # this is a robo type.
 @app.task()
 def robot_type_news(robot_id, keywords):
+    print("TEST: Robot type executed")
+
     chord(
         group(robot_news_eluniversal.s(robot_id, keywords))  # add all the task for this type in here
     )(
-        chain(save_to_excel.s() | send_email.s())()
+        # chain(save_to_excel.s() | send_email.s())()
+        chain(save_to_excel.s() | send_email.s())
     )
 
 
 # robo universal
 @app.task()
 def robot_news_eluniversal(robot_id, keywords):
+    print("TEST: Robot universal executed")
     news_universal = robot_eluniversal(keywords)
     return news_universal
 
@@ -58,20 +62,25 @@ def robot_news_eltiempo():
 def save_to_excel(data):
     print("Excel task execute, This is the data passed to it:\n{}".format(data))
 
+    # test
+    # file_data = open('media/data.py', "a")
+    # file_data.write(str(data))
+    # file_data.close()
+
     file_path = 'media/links.xlsx'
-    # file_headers = ['News title', 'Link']
-    #
-    # workbook = xlsxwriter.Workbook(file_path)
-    # worksheet = workbook.add_worksheet()
-    # worksheet.write_row(0, 0, file_headers)
-    #
-    # row, col = 1, 0
-    # for new in data:
-    #     worksheet.write_row(row, col, new)
-    #     row += 1
-    #
-    # workbook.close()
-    # print("file has been created in {}".format(file_path))
+    file_headers = ['News title', 'Link']
+
+    workbook = xlsxwriter.Workbook(file_path)
+    worksheet = workbook.add_worksheet()
+    worksheet.write_row(0, 0, file_headers)
+
+    row, col = 1, 0
+    for new in data[0]:
+        worksheet.write_row(row, col, new)
+        row += 1
+
+    workbook.close()
+    print("file has been created in {}".format(file_path))
     return file_path
 
 @app.task()
