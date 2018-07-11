@@ -2,8 +2,7 @@ from __future__ import unicode_literals, absolute_import # for unicode and pytho
 
 # importando celery
 import datetime
-from pprint import pprint
-
+# import
 import xlsxwriter as xlsxwriter
 
 from apps.robotone.Robots import robot_eluniversal
@@ -12,6 +11,10 @@ from celery import group, chain, chord
 
 # importar modelos
 from .models import Robotmintor
+
+# impor for email task
+from django.conf import settings
+from django.core.mail import EmailMessage, send_mail
 
 
 @app.task(bind=True)
@@ -38,13 +41,13 @@ def initrobot(self, robo_id, kwords):
 def robot_type_news(robot_id, keywords):
     print("TEST: Robot type executed")
 
-    chord(
-        group(robot_news_eluniversal.s(robot_id, keywords))  # add all the task for this type in here
-    )(
-        # chain(save_to_excel.s() | send_email.s())()
-        chain(save_to_excel.s() | send_email.s())
-    )
+    # chord(
+    #     group(robot_news_eluniversal.s(robot_id, keywords))  # add all the task for this type in here
+    # )(
+    #     chain(save_to_excel.s() | send_email.s())
+    # )
 
+    send_email.delay('media/links.xlsx')
 
 # robo universal
 @app.task()
@@ -56,11 +59,11 @@ def robot_news_eluniversal(robot_id, keywords):
 # robo el tiempo
 @app.task()
 def robot_news_eltiempo():
-    pass
+    return print("se ejecuto el tiempo")
 
 @app.task
 def save_to_excel(data):
-    print("Excel task execute, This is the data passed to it:\n{}".format(data))
+    # print("Excel task execute, This is the data passed to it:\n{}".format(data))
 
     # test
     # file_data = open('media/data.py', "a")
@@ -75,8 +78,8 @@ def save_to_excel(data):
     worksheet.write_row(0, 0, file_headers)
 
     row, col = 1, 0
-    for new in data[0]:
-        worksheet.write_row(row, col, new)
+    for individual_news in data[0]:
+        worksheet.write_row(row, col, individual_news)
         row += 1
 
     workbook.close()
@@ -85,4 +88,17 @@ def save_to_excel(data):
 
 @app.task()
 def send_email(file_path):
+    print("email task")
+    subject = "your subcject"
+    body = "your body"
+
+    e = EmailMessage()
+    e.subject = subject
+    e.to = settings.EMAIL_RECIPIENTS_LIST
+    e.body = body
+    e.attach_file(file_path)
+    e.send()
+
+    print(settings.EMAIL_RECIPIENTS_LIST)
+
     print("emil test was passed the file path: {}".format(file_path))

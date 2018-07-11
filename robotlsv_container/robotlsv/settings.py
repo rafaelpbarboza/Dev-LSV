@@ -120,7 +120,7 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
 STATIC_URL = '/static/'
-MEDIA_URL = '//media/'
+MEDIA_URL = '/media/'
 MEDIA_ROOT = MEDIA_DIR
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
@@ -128,3 +128,12 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.TokenAuthentication'
     )
 }
+
+# email settins
+EMAIL_USE_TLS = True
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 25
+EMAIL_HOST_USER = 'jesuslemus0@gmail.com'
+EMAIL_HOST_PASSWORD = '9iM^8t33b61!E9c'
+EMAIL_RECIPIENTS_LIST = ['jesuslemus0@gmail.com']
+
