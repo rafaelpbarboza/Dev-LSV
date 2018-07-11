@@ -7,9 +7,8 @@ BASE_DIR = os.path.dirname(__file__)
 
 
 class RobotBase():
-    def __init__(self, max_pagination=15):
+    def __init__(self):
         self.driver = WebDriver(executable_path=os.path.join(os.path.dirname(__file__), 'driver', 'chromedriver'))
-        self.max_pagination = max_pagination
         self.page = 1
 
     def run(self, *args):
@@ -20,14 +19,15 @@ class RobotBase():
 
 
 class RobotElUniversal(RobotBase):
-    def __init__(self, max_pagination, *args):
-        RobotBase.__init__(self, max_pagination)
-        self.kwords = " ".join(args)
+    def __init__(self, kwords, max_pagination=0):
+        RobotBase.__init__(self)
+        self.max_pagination = max_pagination
+        self.kwords = kwords
 
     def run(self):
         news = []
         self.page = 0
-        while self.page != self.max_pagination:
+        while self.page != self.max_pagination or self.max_pagination == 0:
             self.query()
             if len(self.driver.find_elements_by_class_name('pager')) == 0:
                 break
@@ -43,14 +43,14 @@ class RobotElUniversal(RobotBase):
 
 
 class RobotElTiempo(RobotBase):
-    def __init__(self, max_pagination, *args):
-        RobotBase.__init__(self, max_pagination)
-        self.max_pagination += 1
-        self.kwords = " ".join(args)
+    def __init__(self, kwords, max_pagination=0):
+        RobotBase.__init__(self)
+        self.max_pagination = max_pagination + 1
+        self.kwords = kwords
 
     def run(self):
         news = []
-        while self.page != self.max_pagination:
+        while self.page != self.max_pagination or self.max_pagination == 1:
             self.query()
             if len(self.driver.find_elements_by_class_name('pagination')) == 0:
                 break
