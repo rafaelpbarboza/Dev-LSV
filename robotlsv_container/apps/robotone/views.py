@@ -15,3 +15,11 @@ class RobotModelViewSet(ModelViewSet):
 
     # def perform_create(self, serializer):
     #     serializer.save(user=self.request.user)
+
+
+# test view
+def robot_view(request):
+
+    tasks.initrobot.delay(1, 'festiva fritos')
+
+    return HttpResponse('You called the task initrobot!')
