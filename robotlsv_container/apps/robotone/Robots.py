@@ -3,33 +3,71 @@ import os
 from selenium.webdriver.chrome.webdriver import WebDriver
 from selenium.webdriver.common.keys import Keys
 
+BASE_DIR = os.path.dirname(__file__)
 
-# BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
 class RobotBase():
-    def __init__(self):
-        self.driver = WebDriver(executable_path=os.path.join('apps/robotone/', 'driver', 'chromedriver'))
+    def __init__(self, max_pagination=15):
+        self.driver = WebDriver(executable_path=os.path.join(os.path.dirname(__file__), 'driver', 'chromedriver'))
+        self.max_pagination = max_pagination
+        self.page = 1
 
-    def run(self, **kwargs):
+    def run(self, *args):
+        pass
+
+    def query(self):
         pass
 
 
 class RobotElUniversal(RobotBase):
-    def run(self, *args):
-        kwords = [word+" " for word in args]
-        self.driver.get('http://www.eluniversal.com.co/')
-        search = self.driver.find_element_by_id('edit-search-nuevo')
-        search.send_keys(kwords)
-        search.send_keys(Keys.RETURN)
-        page = 0
+    def __init__(self, max_pagination, *args):
+        RobotBase.__init__(self, max_pagination)
+        self.kwords = " ".join(args)
+
+    def run(self):
         news = []
-        url = self.driver.current_url
-        while True:
-            self.driver.get(url + '?page=' + str(page))
-            if len(self.driver.find_elements_by_class_name('title')) == 1:
+        self.page = 0
+        while self.page != self.max_pagination:
+            self.query()
+            if len(self.driver.find_elements_by_class_name('pager')) == 0:
                 break
-            [news.append([new.text, new.find_element_by_xpath(".//*").get_attribute('href')])
+            [news.append([new.text, new.find_element_by_tag_name('a').get_attribute('href')])
              for new in self.driver.find_elements_by_class_name('title') if new.text != "SITE"]
-            page += 1
         self.driver.quit()
         return news
+
+    def query(self):
+        url = "http://www.eluniversal.com.co/search/site/" + self.kwords + "?page=" + str(self.page)
+        self.driver.get(url)
+        self.page += 1
+
+
+class RobotElTiempo(RobotBase):
+    def __init__(self, max_pagination, *args):
+        RobotBase.__init__(self, max_pagination)
+        self.max_pagination += 1
+        self.kwords = " ".join(args)
+
+    def run(self):
+        news = []
+        while self.page != self.max_pagination:
+            self.query()
+            if len(self.driver.find_elements_by_class_name('pagination')) == 0:
+                break
+            [news.append([new.text, new.get_attribute('href')]) for new in
+             self.driver.find_elements_by_class_name('title') if new.text != ""]
+        self.driver.quit()
+        return news
+
+    def query(self):
+        url = 'http://www.eltiempo.com/buscar/' + str(self.page) + '?q=' + self.kwords
+        self.driver.get(url)
+        self.page += 1
+
+
+class RobotGoogle(RobotBase):
+    def run(self, *args):
+        kwords = [word + " " for word in args]
+        self.driver.get('http://www.google.com/')
+        self.driver.find_element_by_name('q').send_keys(kwords, Keys.RETURN)
+        self.driver.quit()
