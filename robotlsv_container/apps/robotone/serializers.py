@@ -16,3 +16,10 @@ class RobotoneSerializers(serializers.ModelSerializer):
     class Meta:
         model = Robotmintor
         fields = ('started', 'finished', 'response', 'type', 'status', 'user')
+
+
+class PostSerializer(serializers.Serializer):
+    id = serializers.IntegerField(required=True)
+    word = serializers.CharField(required=True, max_length=100)
+    # type=serializers.CharField(required=True)
+    page=type=serializers.CharField(allow_blank=True)

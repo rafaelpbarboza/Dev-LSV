@@ -83,6 +83,41 @@ def save_to_excel(data):
     # file_data.write(str(data))
     # file_data.close()
 
+
+    # file_path = 'media/links.xlsx'
+    # file_headers = ['News title', 'Link']
+    #
+    # workbook = xlsxwriter.Workbook(file_path)
+    # worksheet = workbook.add_worksheet()
+    # worksheet.write_row(0, 0, file_headers)
+    #
+    # row, col = 1, 0
+    # for individual_news in data[0]:
+    #     worksheet.write_row(row, col, individual_news)
+    #     row += 1
+    #
+    # workbook.close()
+    # print("file has been created in {}".format(file_path))
+    # return file_path
+
+
+@app.task()
+def send_email(file_path):
+    print("email task")
+    # subject = "your subcject"
+    # body = "your body"
+    #
+    # e = EmailMessage()
+    # e.subject = subject
+    # e.to = settings.EMAIL_RECIPIENTS_LIST
+    # e.body = body
+    # e.attach_file(file_path)
+    # e.send()
+    #
+    # print(settings.EMAIL_RECIPIENTS_LIST)
+    #
+    # print("emil test was passed the file path: {}".format(file_path))
+
     file_path = 'media/links.xlsx'
     file_headers = ['News title', 'Link', 'News paper']
 
@@ -116,3 +151,4 @@ def send_email(file_path):
     print(settings.EMAIL_RECIPIENTS_LIST)
 
     print("emil test was passed the file path: {}".format(file_path))
+
