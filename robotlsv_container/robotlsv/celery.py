@@ -5,7 +5,11 @@ from celery import Celery
 # set the default Django settings module for the 'celery' program.
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'robotlsv.settings')
 
-app = Celery('robotlsv')
+# probably the result_backend config
+# source: http://celery.readthedocs.io/en/latest/getting-started/first-steps-with-celery.html#keeping-results
+# app = Celery('tasks', backend='rpc://', broker='pyamqp://')
+
+app = Celery('robotlsv', backend='amqp://', broker='amqp://')
 
 # Using a string here means the worker doesn't have to serialize
 # the configuration object to child processes.
