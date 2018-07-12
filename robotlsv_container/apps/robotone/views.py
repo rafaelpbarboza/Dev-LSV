@@ -20,6 +20,6 @@ class RobotModelViewSet(ModelViewSet):
 # test view
 def robot_view(request):
 
-    tasks.initrobot.delay(1, 'dulces del portal')
+    tasks.initrobot.delay(1, 'dulces del portal', 2)
 
     return HttpResponse('You called the task initrobot!')

@@ -44,7 +44,7 @@ def robot_type_news(robot_id, keywords, pagination):
     chord(
         group(
             robot_news_eluniversal.s(robot_id, keywords, pagination),
-            robot_news_eluniversal.s(robot_id, keywords, pagination)
+            robot_news_eltiempo.s(robot_id, keywords, pagination)
         )  # add all the task for this type in here
     )(
         chain(save_to_excel.s() | send_email.s())
@@ -72,6 +72,7 @@ def robot_news_eltiempo(robot_id, keywords, pagination):
 @app.task
 def save_to_excel(data):
     print("Excel task execute")
+    print("This is the data type that the chrod funct send {}".format(type(data)))
 
     # test
     # file_data = open('media/data.py', "a")
@@ -79,16 +80,17 @@ def save_to_excel(data):
     # file_data.close()
 
     file_path = 'media/links.xlsx'
-    file_headers = ['News title', 'Link']
+    file_headers = ['News title', 'Link', 'News paper']
 
     workbook = xlsxwriter.Workbook(file_path)
     worksheet = workbook.add_worksheet()
     worksheet.write_row(0, 0, file_headers)
 
     row, col = 1, 0
-    for individual_news in data[0]:
-        worksheet.write_row(row, col, individual_news)
-        row += 1
+    for multiple_news in data:
+        for individual_news in multiple_news:
+            worksheet.write_row(row, col, individual_news)
+            row += 1
 
     workbook.close()
     print("file has been created in {}".format(file_path))
@@ -97,16 +99,16 @@ def save_to_excel(data):
 @app.task()
 def send_email(file_path):
     print("email task")
-    subject = "your subcject"
-    body = "your body"
-
-    e = EmailMessage()
-    e.subject = subject
-    e.to = settings.EMAIL_RECIPIENTS_LIST
-    e.body = body
-    e.attach_file(file_path)
-    e.send()
-
-    print(settings.EMAIL_RECIPIENTS_LIST)
-
-    print("emil test was passed the file path: {}".format(file_path))
+    # subject = "your subcject"
+    # body = "your body"
+    #
+    # e = EmailMessage()
+    # e.subject = subject
+    # e.to = settings.EMAIL_RECIPIENTS_LIST
+    # e.body = body
+    # e.attach_file(file_path)
+    # e.send()
+    #
+    # print(settings.EMAIL_RECIPIENTS_LIST)
+    #
+    # print("emil test was passed the file path: {}".format(file_path))
