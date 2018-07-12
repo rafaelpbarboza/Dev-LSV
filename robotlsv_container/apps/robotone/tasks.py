@@ -56,12 +56,12 @@ def robot_type_news(robot_id, keywords, pagination):
 # robo universal
 @app.task()
 def robot_news_eluniversal(robot_id, keywords, pagination):
-    print("TEST: Robot universal executed")
 
     # RobotElTiempo('Palbra1 palabra2', 5)
     robot = RobotElUniversal(keywords, pagination)
     news = robot.run()
 
+    print("TEST: Robot universal terminated")
     return news
 
 # robo el tiempo
@@ -70,6 +70,7 @@ def robot_news_eltiempo(robot_id, keywords, pagination):
 
     robot = RobotElTiempo(keywords, pagination)
     news = robot.run()
+    print("TEST: Robot el tiempo terminated")
     return news
 
 @app.task
@@ -101,17 +102,17 @@ def save_to_excel(data):
 
 @app.task()
 def send_email(file_path):
-    print("email task")
-    # subject = "your subcject"
-    # body = "your body"
-    #
-    # e = EmailMessage()
-    # e.subject = subject
-    # e.to = settings.EMAIL_RECIPIENTS_LIST
-    # e.body = body
-    # e.attach_file(file_path)
-    # e.send()
-    #
-    # print(settings.EMAIL_RECIPIENTS_LIST)
-    #
-    # print("emil test was passed the file path: {}".format(file_path))
+    print("email task started")
+    subject = "your subcject"
+    body = "your body"
+
+    e = EmailMessage()
+    e.subject = subject
+    e.to = settings.EMAIL_RECIPIENTS_LIST
+    e.body = body
+    e.attach_file(file_path)
+    e.send()
+
+    print(settings.EMAIL_RECIPIENTS_LIST)
+
+    print("emil test was passed the file path: {}".format(file_path))
