@@ -2,10 +2,11 @@ from __future__ import unicode_literals, absolute_import # for unicode and pytho
 
 # importando celery
 import datetime
+
 # import
 import xlsxwriter as xlsxwriter
 
-from apps.robotone.Robots import robot_eluniversal
+from apps.robotone.Robots import RobotElUniversal, RobotElTiempo
 from robotlsv import celery_app as app
 from celery import group, chain, chord
 
@@ -18,7 +19,7 @@ from django.core.mail import EmailMessage, send_mail
 
 
 @app.task(bind=True)
-def initrobot(self, robo_id, kwords):
+def initrobot(self, robo_id, kwords, pagination=5):
     """inicializar y redireccionar el tipo de robot"""
 
     # get robot type by id = type
@@ -35,25 +36,22 @@ def initrobot(self, robo_id, kwords):
     if robo_type == 'robotB':
         robot_type_news.delay(robo_id, kwords)
 
-
 # # # this is a robo type.
 @app.task()
 def robot_type_news(robot_id, keywords):
     print("TEST: Robot type executed")
 
-    # chord(
-    #     group(robot_news_eluniversal.s(robot_id, keywords))  # add all the task for this type in here
-    # )(
-    #     chain(save_to_excel.s() | send_email.s())
-    # )
-
-    send_email.delay('media/links.xlsx')
+    chord(
+        group(robot_news_eluniversal.s(robot_id, keywords))  # add all the task for this type in here
+    )(
+        chain(save_to_excel.s() | send_email.s())
+    )
 
 # robo universal
 @app.task()
 def robot_news_eluniversal(robot_id, keywords):
     print("TEST: Robot universal executed")
-    news_universal = robot_eluniversal(keywords)
+    news_universal = RobotElUniversal(keywords)
     return news_universal
 
 # robo el tiempo
