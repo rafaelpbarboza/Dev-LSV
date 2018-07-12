@@ -24,17 +24,20 @@ def initrobot(self, robo_id, kwords, pagination=0):
 
     # get robot type by id = type
     current_robot = Robotmintor.objects.get(pk=robo_id)
-    robo_type = current_robot.TYPE[int(current_robot.type)][1]
+    # print("robot type 1: {}".format(current_robot.type))
+    robo_type = current_robot.TYPE[int(current_robot.type)-1][1]
 
     # inicializar valor de started
     current_robot.started = datetime.datetime.now()
     current_robot.status = "2"
     current_robot.save()
 
-    print("robot type: {}".format(robo_type))
+    # print("robot type 2: {}".format(robo_type))
 
-    if robo_type == 'robotB':
+    if robo_type == 'robotA':
         robot_type_news.delay(robo_id, kwords, pagination)
+    else:
+        return "You have no set up {} tyoe fo robot yet".format(robo_type)
 
 # this is a robo type.
 @app.task()
@@ -87,8 +90,8 @@ def save_to_excel(data):
     worksheet.write_row(0, 0, file_headers)
 
     row, col = 1, 0
-    for multiple_news in data:
-        for individual_news in multiple_news:
+    for news_per_newspaper in data:
+        for individual_news in news_per_newspaper:
             worksheet.write_row(row, col, individual_news)
             row += 1
 
