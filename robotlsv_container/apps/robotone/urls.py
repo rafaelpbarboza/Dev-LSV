@@ -1,7 +1,7 @@
 from django.conf.urls import url
 
 from rest_framework.routers import SimpleRouter
-from .views import RobotModelViewSet, robot_view
+from .views import RobotModelViewSet, Robot_view
 
 router = SimpleRouter()
 
@@ -11,7 +11,7 @@ router.register(r'model', RobotModelViewSet )
 urls = router.urls
 
 urlpatterns = [
-    url(r'^', robot_view, name='robot_view')
+    url(r'^task/$',Robot_view.as_view(), name='robot_view')
     # url(r'^$', RobotModelViewSet, name='robots'),
     # url(r'^(?P<pk>\d+)/$', RobotModelViewSet, name='robots_name'),
     # url(r'^cbv/$', snippet_view),
