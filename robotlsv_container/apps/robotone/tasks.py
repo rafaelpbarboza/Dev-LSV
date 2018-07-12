@@ -19,12 +19,12 @@ from django.core.mail import EmailMessage, send_mail
 
 
 @app.task(bind=True)
-def initrobot(self, robo_id, kwords, pagination=5):
+def initrobot(self, robo_id, kwords, pagination=0):
     """inicializar y redireccionar el tipo de robot"""
 
     # get robot type by id = type
     current_robot = Robotmintor.objects.get(pk=robo_id)
-    robo_type =  current_robot.TYPE[int(current_robot.type)][1]
+    robo_type = current_robot.TYPE[int(current_robot.type)][1]
 
     # inicializar valor de started
     current_robot.started = datetime.datetime.now()
@@ -34,34 +34,44 @@ def initrobot(self, robo_id, kwords, pagination=5):
     print("robot type: {}".format(robo_type))
 
     if robo_type == 'robotB':
-        robot_type_news.delay(robo_id, kwords)
+        robot_type_news.delay(robo_id, kwords, pagination)
 
-# # # this is a robo type.
+# this is a robo type.
 @app.task()
-def robot_type_news(robot_id, keywords):
+def robot_type_news(robot_id, keywords, pagination):
     print("TEST: Robot type executed")
 
     chord(
-        group(robot_news_eluniversal.s(robot_id, keywords))  # add all the task for this type in here
+        group(
+            robot_news_eluniversal.s(robot_id, keywords, pagination),
+            robot_news_eluniversal.s(robot_id, keywords, pagination)
+        )  # add all the task for this type in here
     )(
         chain(save_to_excel.s() | send_email.s())
     )
 
 # robo universal
 @app.task()
-def robot_news_eluniversal(robot_id, keywords):
+def robot_news_eluniversal(robot_id, keywords, pagination):
     print("TEST: Robot universal executed")
-    news_universal = RobotElUniversal(keywords)
-    return news_universal
+
+    # RobotElTiempo('Palbra1 palabra2', 5)
+    robot = RobotElUniversal(keywords, pagination)
+    news = robot.run()
+
+    return news
 
 # robo el tiempo
 @app.task()
-def robot_news_eltiempo():
-    return print("se ejecuto el tiempo")
+def robot_news_eltiempo(robot_id, keywords, pagination):
+
+    robot = RobotElTiempo(keywords, pagination)
+    news = robot.run()
+    return news
 
 @app.task
 def save_to_excel(data):
-    # print("Excel task execute, This is the data passed to it:\n{}".format(data))
+    print("Excel task execute")
 
     # test
     # file_data = open('media/data.py', "a")
