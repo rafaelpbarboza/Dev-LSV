@@ -133,7 +133,7 @@ REST_FRAMEWORK = {
 EMAIL_USE_TLS = True
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 25
-EMAIL_HOST_USER = 'jesuslemus0@gmail.com'
-EMAIL_HOST_PASSWORD = '9iM^8t33b61!E9c'
-EMAIL_RECIPIENTS_LIST = ['jesuslemus0@gmail.com']
+EMAIL_HOST_USER = 'testacountdevlsv@gmail.com'
+EMAIL_HOST_PASSWORD = 'lsv123456789'
+EMAIL_RECIPIENTS_LIST = ['jesuslemus0@gmail.com', 'dnunezd96@gmail.com']
 

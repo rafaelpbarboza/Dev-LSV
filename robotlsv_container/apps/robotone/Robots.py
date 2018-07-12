@@ -57,6 +57,7 @@ class RobotElTiempo(RobotBase):
             self.browser = self.max_pagination-1
         while (self.page < self.max_pagination or self.max_pagination == 1) and self.goon:
             for i in range(self.browser):
+                # change to paginatesoup
                 t = threading.Thread(target=self.paginate, args=(news,))
                 threads.append(t)
                 t.start()
@@ -106,7 +107,7 @@ class RobotElTiempo(RobotBase):
             self.goon = False
             return
         [news.append([(new.text.replace('\n', '')).strip(),
-                      'http://eltiempo.com' + str(new.attrs['href'])]) for new in
+                      'http://eltiempo.com' + str(new.attrs['href']), 'El tiempo']) for new in
          search.find_all('a', class_='title')]
         return
 
