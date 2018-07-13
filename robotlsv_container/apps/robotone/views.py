@@ -26,8 +26,6 @@ class RobotModelViewSet(ModelViewSet):
 
 
 # test view
-
-
 class Robot_view(APIView):
 
     def post(self, request):
@@ -41,8 +39,4 @@ class Robot_view(APIView):
                 return HttpResponseRedirect('../model/'+str(user.id))
             except Exception:
                 return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-                print(Exception.message)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
-
