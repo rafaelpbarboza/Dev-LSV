@@ -17,6 +17,10 @@ from .models import Robotmintor
 from django.conf import settings
 from django.core.mail import EmailMessage
 
+# import for signals
+from celery.signals import task_revoked, task_failure, task_prerun, task_postrun, task_success
+
+
 
 @app.task(bind=True)
 def initrobot(self, robo_id, kwords, pagination=0):
@@ -118,3 +122,44 @@ def send_email(file_path):
 
     print("emil test was passed the file path: {}".format(file_path))
 
+
+@app.task()
+def send_email_failed_task(**kwargs):
+    """ send this tasks when a tasks fails """
+
+    print("sending email due task failure")
+    subject = "your subcject"
+    body = "your body"
+
+    e = EmailMessage()
+    e.subject = subject
+    e.to = settings.EMAIL_RECIPIENTS_LIST
+    e.body = body
+    # e.attach_file(file_path)
+    e.send()
+
+    print(settings.EMAIL_RECIPIENTS_LIST)
+
+
+# @task_prerun.connect
+# def task_prerun_handler(task_id, task, *args, **kwargs):
+#     pass
+#
+#
+# @task_postrun.connect
+# def task_postrun_handler(task_id, task, *args, **kwargs):
+#     pass
+
+
+@task_success.connect
+def task_success_handler(sender, result, **kwargs):
+    pass
+
+@task_failure.connect
+def task_failure_handler(sender, result, **kwargs):
+    send_email_failed_task.delay()
+
+@task_revoked.connect()
+def on_task_revoked(*args, **kwargs):
+    print(str(kwargs))
+    print('task_revoked')
