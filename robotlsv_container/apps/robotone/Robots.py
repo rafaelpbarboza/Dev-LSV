@@ -58,7 +58,7 @@ class RobotElTiempo(RobotBase):
         while (self.page < self.max_pagination or self.max_pagination == 1) and self.goon:
             for i in range(self.browser):
                 # change to paginatesoup
-                t = threading.Thread(target=self.paginate, args=(news,))
+                t = threading.Thread(target=self.paginatesoup, args=(news,))
                 threads.append(t)
                 t.start()
                 self.page += 1
@@ -112,8 +112,9 @@ class RobotElTiempo(RobotBase):
         return
 
     def querysoup(self):
-        url = 'http://www.eltiempo.com/buscar/' + str(self.page) + '?q=' + self.kwords
-        soup = BeautifulSoup(requests.get(url).text, "html.parser")
+        driver = self.query()
+        soup = BeautifulSoup(driver.page_source, "html.parser")
+        driver.quit()
         return soup
 
     # def run(self):
