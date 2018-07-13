@@ -124,31 +124,18 @@ def send_email(file_path):
 
 
 @app.task()
-def send_email_failed_task(**kwargs):
+def send_email_failed_task(kw):
     """ send this tasks when a tasks fails """
 
     print("sending email due task failure")
-    subject = "your subcject"
-    body = "your body"
+    subject = "Task failied"
+    body = "Info of your failed task: {}".format(kw)
 
     e = EmailMessage()
     e.subject = subject
-    e.to = settings.EMAIL_RECIPIENTS_LIST
+    e.to = settings.EMAIL_HOST_USER
     e.body = body
-    # e.attach_file(file_path)
     e.send()
-
-    print(settings.EMAIL_RECIPIENTS_LIST)
-
-
-# @task_prerun.connect
-# def task_prerun_handler(task_id, task, *args, **kwargs):
-#     pass
-#
-#
-# @task_postrun.connect
-# def task_postrun_handler(task_id, task, *args, **kwargs):
-#     pass
 
 
 @task_success.connect
@@ -157,7 +144,7 @@ def task_success_handler(sender, result, **kwargs):
 
 @task_failure.connect
 def task_failure_handler(sender, result, **kwargs):
-    send_email_failed_task.delay()
+    send_email_failed_task.delay(kwargs)
 
 @task_revoked.connect()
 def on_task_revoked(*args, **kwargs):
