@@ -15,11 +15,7 @@ from .models import Robotmintor
 
 # impor for email task
 from django.conf import settings
-from django.core.mail import EmailMessage
-
-# import for signals
-from celery.signals import task_revoked, task_failure, task_prerun, task_postrun, task_success
-
+from django.core.mail import EmailMessage, send_mail
 
 
 @app.task(bind=True)
@@ -88,22 +84,21 @@ def save_to_excel(data):
     # file_data.close()
 
     file_path = 'media/links.xlsx'
-    file_headers = ['News title', 'Link']
+    file_headers = ['News title', 'Link', 'News paper']
 
     workbook = xlsxwriter.Workbook(file_path)
     worksheet = workbook.add_worksheet()
     worksheet.write_row(0, 0, file_headers)
 
     row, col = 1, 0
-    for individual_news in data[0]:
-        worksheet.write_row(row, col, individual_news)
-        row += 1
+    for news_per_newspaper in data:
+        for individual_news in news_per_newspaper:
+            worksheet.write_row(row, col, individual_news)
+            row += 1
 
     workbook.close()
     print("file has been created in {}".format(file_path))
     return file_path
-
-
 
 @app.task()
 def send_email(file_path):
@@ -121,32 +116,3 @@ def send_email(file_path):
     print(settings.EMAIL_RECIPIENTS_LIST)
 
     print("emil test was passed the file path: {}".format(file_path))
-
-
-@app.task()
-def send_email_failed_task(kw):
-    """ send this tasks when a tasks fails """
-
-    print("sending email due task failure")
-    subject = "Task failied"
-    body = "Info of your failed task: {}".format(kw)
-
-    e = EmailMessage()
-    e.subject = subject
-    e.to = settings.EMAIL_HOST_USER
-    e.body = body
-    e.send()
-
-
-@task_success.connect
-def task_success_handler(sender, result, **kwargs):
-    pass
-
-@task_failure.connect
-def task_failure_handler(sender, result, **kwargs):
-    send_email_failed_task.delay(kwargs)
-
-@task_revoked.connect()
-def on_task_revoked(*args, **kwargs):
-    print(str(kwargs))
-    print('task_revoked')

@@ -30,8 +30,6 @@ class RobotModelViewSet(ModelViewSet):
 
 
 # test view
-
-
 class Robot_view(APIView):
     #Verificar si usuario tiene permisos y si esta autenticado
     permission_classes = (IsAuthenticated, )
@@ -51,11 +49,13 @@ class Robot_view(APIView):
                     if monitor.status == "2" or monitor.status == "3":
                         return Response({'description': 'This monitor have been initiated or have been finished'},
                                         status=status.HTTP_403_FORBIDDEN)
+                    initrobot.delay(data['id'], data['word'], data['page'])
                     return Response(serializer.data, status=status.HTTP_200_OK)
                 elif data['method']==2:
                     if monitor.status == "1" or monitor.status == "3":
                         return Response({'description': "This monitor can't be stopped"})
-                    return Response(serializer.data, status=status.HTTP_200_OK)
+                    #Aca iria el revoke
+                    return Response({'description': "This monitor is stopping"})
 
                 # If method 1 == Inicar and IF Monitor.stado == Iniciado => El monitor ya fue iniciado
             # IF method 2 == Detener
@@ -66,4 +66,3 @@ class Robot_view(APIView):
 
             else:
                 return Response({'description':'You are not the owner of this monitor'}, status=status.HTTP_403_FORBIDDEN)
-
