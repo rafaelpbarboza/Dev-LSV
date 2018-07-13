@@ -45,11 +45,11 @@ class Robot_view(APIView):
             monitor = get_object_or_404(Robotmintor.objects.filter(id=data['id']))
             if monitor.user.id == self.request.user.id:
                 if data['method']==1:
-                    initrobot.delay(monitor.id, data['word'], data['page'])
                     if monitor.status == "2" or monitor.status == "3":
                         return Response({'description': 'This monitor have been initiated or have been finished'},
                                         status=status.HTTP_403_FORBIDDEN)
-                    initrobot.delay(data['id'], data['word'], data['page'])
+                    initrobot.delay(monitor.id, data['word'], data['page'])
+                    #initrobot.delay(data['id'], data['word'], data['page'])
                     return Response(serializer.data, status=status.HTTP_200_OK)
                 elif data['method']==2:
                     if monitor.status == "1" or monitor.status == "3":
