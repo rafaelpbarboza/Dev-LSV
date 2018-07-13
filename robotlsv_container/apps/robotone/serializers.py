@@ -22,4 +22,5 @@ class PostSerializer(serializers.Serializer):
     id = serializers.IntegerField(required=True)
     word = serializers.CharField(required=True, max_length=100)
     # type=serializers.CharField(required=True)
-    page=type=serializers.CharField(allow_blank=True)
+    page=serializers.IntegerField(required=True)
+    method=serializers.IntegerField(required=True)
